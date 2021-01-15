@@ -519,7 +519,6 @@ const init = async () => {
                 }
 
                 let results = await getStates.exec();
-                console.log('--------results', accounts);
                 let accountList = results
                     .map(
                         row =>
