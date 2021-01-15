@@ -507,18 +507,25 @@ const init = async () => {
 
         async handler(request) {
             try {
-                let accounts = await redis.smembers('ia:accounts');
+                let accounts = [];
+                if (request.query.ids && typeof request.query.ids === 'string') {
+                    accounts = request.query.ids.split(',');
+                } else {
+                    accounts = await redis.smembers('ia:accounts');
+                }
                 let getStates = redis.pipeline();
                 for (let account of accounts) {
                     getStates = getStates.hgetall(`iad:${account}`);
                 }
 
                 let results = await getStates.exec();
+                console.log('--------results', accounts);
                 let accountList = results
                     .map(
                         row =>
                             row &&
-                            row[1] && {
+                            row[1] &&
+                            row[1].account && {
                                 account: row[1].account,
                                 name: row[1].name,
                                 state: row[1].state,
@@ -557,7 +564,8 @@ const init = async () => {
                         .valid('init', 'connecting', 'connected', 'authenticationError', 'connectError', 'unset', 'disconnected')
                         .example('connected')
                         .description('Filter accounts by state')
-                        .label('AccountState')
+                        .label('AccountState'),
+                    ids: Joi.string()
                 }).label('AccountsFilter')
             }
         }
