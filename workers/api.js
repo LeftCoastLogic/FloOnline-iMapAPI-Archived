@@ -1257,7 +1257,8 @@ const init = async () => {
                         emailId: Joi.string().max(256).description('Match specific Gmail unique email UD'),
                         threadId: Joi.string().max(256).description('Match specific Gmail unique thread UD'),
 
-                        header: Joi.object().unknown(true).description('Headers to match against').label('Headers')
+                        header: Joi.object().unknown(true).description('Headers to match against').label('Headers'),
+                        or: Joi.array().description('OR to search multiple condition OR').label('OR'),
                     })
                         .required()
                         .description('Search query to filter messages')
