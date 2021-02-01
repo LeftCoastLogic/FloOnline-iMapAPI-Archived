@@ -178,7 +178,7 @@ async function call(message, transferList) {
             err.statusCode = 504;
             err.code = 'Timeout';
             reject(err);
-        }, message.timeout || 10 * 1000);
+        }, message.timeout || 60 * 1000);
 
         callQueue.set(mid, { resolve, reject, timer });
 
