@@ -178,7 +178,7 @@ async function call(message, transferList) {
             err.statusCode = 504;
             err.code = 'Timeout';
             reject(err);
-        }, message.timeout || 10 * 1000);
+        }, message.timeout || 60 * 1000);
 
         callQueue.set(mid, { resolve, reject, timer });
 
@@ -1257,7 +1257,8 @@ const init = async () => {
                         emailId: Joi.string().max(256).description('Match specific Gmail unique email UD'),
                         threadId: Joi.string().max(256).description('Match specific Gmail unique thread UD'),
 
-                        header: Joi.object().unknown(true).description('Headers to match against').label('Headers')
+                        header: Joi.object().unknown(true).description('Headers to match against').label('Headers'),
+                        or: Joi.array().description('OR to search multiple condition OR').label('OR'),
                     })
                         .required()
                         .description('Search query to filter messages')
