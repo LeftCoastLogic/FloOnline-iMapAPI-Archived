@@ -12,4 +12,4 @@ maxSize = "5M" # maximum size of an attachment when submitting or uploading mess
 redis = "redis://127.0.0.1:6379/8"
 
 [log]
-level = "debug"
+level = "info"
