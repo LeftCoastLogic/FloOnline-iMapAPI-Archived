@@ -1,4 +1,7 @@
 
+[workers]
+imap = 4
+
 [api]
 port = 4000
 host = "127.0.0.1" # by default API server is accessible from localhost only
@@ -9,4 +12,4 @@ maxSize = "5M" # maximum size of an attachment when submitting or uploading mess
 redis = "redis://127.0.0.1:6379/8"
 
 [log]
-level = "debug"
+level = "info"
