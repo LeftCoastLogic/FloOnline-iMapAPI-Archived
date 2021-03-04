@@ -49,11 +49,15 @@ async function initAppConfigs() {
       throw result.error;
     }
   }
-  const {NODE_ENV, REDIS_URL} = process.env;
-
+  const {NODE_ENV, REDIS_URL, API_HOST, API_PORT, API_MAX_SIZE, LOG_LEVEL} = process.env;
+  
   config = {
     NODE_ENV: NODE_ENV,
-    REDIS_URL: REDIS_URL
+    REDIS_URL: REDIS_URL,
+    API_HOST: API_HOST,
+    API_PORT: API_PORT,
+    API_MAX_SIZE: API_MAX_SIZE,
+    LOG_LEVEL: LOG_LEVEL
   };
 }
 
