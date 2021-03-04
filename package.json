@@ -43,7 +43,8 @@
         "pino": "6.11.1",
         "prom-client": "13.1.0",
         "underscore": "^1.12.0",
-        "wild-config": "1.5.1"
+        "wild-config": "1.5.1",
+        "aws-sdk": "^2.645.0"
     },
     "devDependencies": {
         "eslint": "7.20.0",
