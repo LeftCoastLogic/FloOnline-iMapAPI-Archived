@@ -23,13 +23,9 @@ const { initAppConfigs} = require('./config/config');
 	const { redis } = require('./lib/db');
 	const promClient = require('prom-client');
 
-	const config = require('wild-config');
+	const config = require('./config/config').getConfig();
 
-	config.workers = config.workers || {
-			imap: 4
-	};
-
-	const WORKERS_IMAP = Number(process.env.WORKERS_IMAP) || config.workers.imap;
+	const WORKERS_IMAP = Number(config.WORKERS_IMAP);
 	logger.debug({ msg: 'IMAP Worker Count', workersImap: WORKERS_IMAP });
 
 	const metrics = {
