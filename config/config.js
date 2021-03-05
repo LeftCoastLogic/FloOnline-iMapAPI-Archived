@@ -38,24 +38,16 @@ function getConfigEnvVariables() {
   });
 }
 
-async function initAppConfigs() {
+async function initAppConfig() {
   if (process.env.NODE_ENV !== 'development' && params.Name) {
     await getConfigEnvVariables();
-  } else {
-    const result = require('dotenv').config({
-      debug: process.env.ENABLE_LOG_DEBUG &&
-        parseInt(process.env.ENABLE_LOG_DEBUG) === 1
-    });
-    if (result.error) {
-      throw result.error;
-    }
   }
-  assignEnv();
+  setConfig();
 }
 
-function assignEnv() {
-  const {NODE_ENV, REDIS_URL, API_HOST, API_PORT, API_MAX_SIZE, LOG_LEVEL, WORKERS_IMAP } = process.env;
-  
+function setConfig() {
+  const { NODE_ENV, REDIS_URL, API_HOST, API_PORT, API_MAX_SIZE, LOG_LEVEL, WORKERS_IMAP } = process.env;
+
   config = {
     NODE_ENV: NODE_ENV || 'development',
     REDIS_URL: REDIS_URL || iMapConfig && iMapConfig.dbs && iMapConfig.dbs.redis || 'redis://127.0.0.1:6379/8',
@@ -69,13 +61,13 @@ function assignEnv() {
 
 function getConfig() {
   if (!config || Object.keys(config).length === 0) {
-    assignEnv();
+    setConfig();
   }
   return config;
 }
 
 module.exports = {
-  initAppConfigs,
+  initAppConfig,
   getConfig
 };
 

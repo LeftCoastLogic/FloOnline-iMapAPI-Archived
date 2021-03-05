@@ -1,11 +1,10 @@
 'use strict';
-const { initAppConfigs} = require('./config/config');
+const { initAppConfig } = require('./config/config');
 
 // Main app
 (async () => {
-	await initAppConfigs();
+	await initAppConfig();
 
-	require('dotenv').config();
 	try {
 			process.chdir(__dirname);
 	} catch (err) {
