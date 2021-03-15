@@ -13,7 +13,6 @@ const Vision = require('@hapi/vision');
 const HapiSwagger = require('hapi-swagger');
 const packageData = require('../package.json');
 const pathlib = require('path');
-const config = require('wild-config');
 const { PassThrough } = require('stream');
 const msgpack = require('msgpack5')();
 const consts = require('../lib/consts');
@@ -23,17 +22,12 @@ const { Account } = require('../lib/account');
 const settings = require('../lib/settings');
 const { getByteSize } = require('../lib/tools');
 const { getConfig } = require('../config/config');
-const appConfig = getConfig();
+const config = getConfig();
 
 const RESYNC_DELAY = 15 * 60;
 const DEFAULT_MAX_ATTACHMENT_SIZE = 5 * 1024 * 1024;
 
-config.api = config.api || {
-    port: 3000,
-    host: '127.0.0.1'
-};
-
-const MAX_ATTACHMENT_SIZE = getByteSize(appConfig.API_MAX_SIZE || process.env.API_MAX_SIZE || config.api.maxSize) || DEFAULT_MAX_ATTACHMENT_SIZE;
+const MAX_ATTACHMENT_SIZE = getByteSize(config.API_MAX_SIZE) || DEFAULT_MAX_ATTACHMENT_SIZE;
 
 // allowed configuration keys
 const settingsSchema = {
@@ -256,8 +250,8 @@ parentPort.on('message', message => {
 });
 
 const init = async () => {
-    const apiHost = appConfig.API_HOST || process.env.API_HOST || config.api.host;
-    const apiPort = (appConfig.API_PORT && Number(appConfig.API_PORT)) || (process.env.API_PORT && Number(process.env.API_PORT)) || config.api.port;
+    const apiHost = config.API_HOST;
+    const apiPort = config.API_PORT && Number(config.API_PORT);
     const server = Hapi.server({
         port: apiPort,
         host: apiHost
@@ -1717,8 +1711,8 @@ async function getStats() {
 
 init()
     .then(() => {
-        const apiHost = appConfig.API_HOST || process.env.API_HOST || config.api.host;
-        const apiPort = (appConfig.API_PORT && Number(process.env.API_PORT)) || (process.env.API_PORT && Number(process.env.API_PORT)) || config.api.port;
+        const apiHost = config.API_HOST;
+        const apiPort = (config.API_PORT && Number(process.env.API_PORT));
         logger.debug({
             msg: 'API server started',
             port: apiPort,
