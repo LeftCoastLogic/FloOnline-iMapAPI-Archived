@@ -1568,6 +1568,53 @@ const init = async () => {
 
     server.route({
         method: 'GET',
+        path: '/v1/account/{account}/messages/preview',
+
+        async handler(request) {
+            let accountObject = new Account({ redis, account: request.params.account, call });
+
+            try {
+                let textIds = [];
+                if (request.query.textIds && typeof request.query.textIds === 'string') {
+                    textIds = request.query.textIds.split(',');
+                }
+                return await accountObject.getMessagePreviews({ textIds });
+            } catch (err) {
+                if (Boom.isBoom(err)) {
+                    throw err;
+                }
+                throw Boom.boomify(err, { statusCode: err.statusCode || 500, decorate: { code: err.code } });
+            }
+        },
+        options: {
+            description: 'Get preview content of multiple messages',
+            tags: ['api', 'messages'],
+
+            validate: {
+                options: {
+                    stripUnknown: false,
+                    abortEarly: false,
+                    convert: true
+                },
+                failAction,
+
+                params: Joi.object({
+                    account: Joi.string().max(256).required().example('example').description('Account ID')
+                }),
+
+                query: Joi.object(
+                    {
+                        textIds: Joi.string()
+                            .required()
+                            .example('AAAAAQAACnAcdfaaN,AAAAAQAACnAcdfavN')
+                            .description('List of text IDs').label('TextIds')
+                    })
+            }
+        }
+    });
+
+    server.route({
+        method: 'GET',
         path: '/metrics',
         async handler(request, h) {
             const renderedMetrics = await call({ cmd: 'metrics' });

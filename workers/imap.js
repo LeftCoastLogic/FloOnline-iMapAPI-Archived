@@ -133,6 +133,23 @@ class ConnectionHandler {
         return await accountData.connection.listMessages(message);
     }
 
+    async messagePreviews(message) {
+        if (!this.accounts.has(message.account)) {
+            return {
+                error: 'No active handler for requested account. Try again later.'
+            };
+        }
+
+        let accountData = this.accounts.get(message.account);
+        if (!accountData.connection) {
+            return {
+                error: 'No active handler for requested account. Try again later.'
+            };
+        }
+
+        return await accountData.connection.messagePreviews(message);
+    }
+
     async buildContacts(message) {
         if (!this.accounts.has(message.account)) {
             return {
@@ -470,6 +487,9 @@ class ConnectionHandler {
             case 'uploadMessage':
                 return await this.uploadMessage(message);
 
+            case 'messagePreviews':
+                return await this.messagePreviews(message);
+
             case 'countConnections': {
                 let results = Object.assign({}, DEFAULT_STATES);
 
@@ -509,7 +529,7 @@ class ConnectionHandler {
                 err.statusCode = 504;
                 err.code = 'Timeout';
                 reject(err);
-            }, message.timeout || 120 * 1000);
+            }, message.timeout || 10 * 1000);
 
             this.callQueue.set(mid, { resolve, reject, timer });
             parentPort.postMessage({

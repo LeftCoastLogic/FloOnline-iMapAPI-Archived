@@ -32,6 +32,7 @@
         "html-to-text": "7.0.0",
         "imapflow": "1.0.53",
         "ioredis": "4.22.0",
+        "is-html": "^2.0.0",
         "joi": "17.4.0",
         "jquery": "3.5.1",
         "libmime": "5.0.0",

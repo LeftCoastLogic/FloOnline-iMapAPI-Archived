@@ -193,7 +193,7 @@ const { initAppConfig } = require('./config/config');
 							err.statusCode = 504;
 							err.code = 'Timeout';
 							reject(err);
-					}, message.timeout || 120 * 1000);
+					}, message.timeout || 10 * 1000);
 
 					callQueue.set(mid, { resolve, reject, timer });
 					worker.postMessage(
@@ -308,6 +308,7 @@ const { initAppConfig } = require('./config/config');
 							return;
 
 					case 'listMessages':
+					case 'messagePreviews':
 					case 'buildContacts':
 					case 'getRawMessage':
 					case 'getText':
