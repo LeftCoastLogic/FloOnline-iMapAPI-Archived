@@ -373,9 +373,9 @@ const { initAppConfig } = require('./config/config');
 			});
 	}
 
-	setInterval(() => {
-			collectMetrics().catch(err => logger.error({ msg: 'Failed to collect metrics', err }));
-	}, 5000).unref();
+	// setInterval(() => {
+	// 		collectMetrics().catch(err => logger.error({ msg: 'Failed to collect metrics', err }));
+	// }, 5000).unref();
 
 	process.on('SIGTERM', () => {
 			if (closing) {
