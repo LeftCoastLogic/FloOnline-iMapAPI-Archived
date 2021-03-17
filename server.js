@@ -308,6 +308,7 @@ const { initAppConfig } = require('./config/config');
 							return;
 
 					case 'listMessages':
+					case 'messagePreviews':
 					case 'buildContacts':
 					case 'getRawMessage':
 					case 'getText':
