@@ -55,7 +55,7 @@ function setConfig() {
     API_PORT: API_PORT || iMapConfig && iMapConfig.api && iMapConfig.api.port || '3000',
     API_MAX_SIZE: API_MAX_SIZE || iMapConfig && iMapConfig.api && iMapConfig.api.maxSize || '5M',
     LOG_LEVEL: LOG_LEVEL || iMapConfig && iMapConfig.log && iMapConfig.log.level || 'info',
-    WORKERS_IMAP: WORKERS_IMAP || iMapConfig && iMapConfig.workers && iMapConfig.workers.imap || '5'
+    WORKERS_IMAP: WORKERS_IMAP || iMapConfig && iMapConfig.workers && iMapConfig.workers.imap || '4'
   };
 }
 

@@ -1,6 +1,6 @@
 
 [workers]
-imap = 5
+imap = 4
 
 [api]
 port = 4000
