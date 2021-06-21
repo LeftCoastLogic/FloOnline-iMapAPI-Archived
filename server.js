@@ -189,7 +189,7 @@ const { initAppConfig } = require('./config/config');
 					let mid = `${Date.now()}:${++mids}`;
 
 					let timer = setTimeout(() => {
-							let err = new Error('Timeout waiting for command response');
+							let err = new Error('Timeout waiting for command response in server');
 							err.statusCode = 504;
 							err.code = 'Timeout';
 							reject(err);

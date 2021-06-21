@@ -170,11 +170,11 @@ async function call(message, transferList) {
         let mid = `${Date.now()}:${++mids}`;
 
         let timer = setTimeout(() => {
-            let err = new Error('Timeout waiting for command response');
+            let err = new Error('Timeout waiting for command response in api');
             err.statusCode = 504;
             err.code = 'Timeout';
             reject(err);
-        }, message.timeout || 20 * 1000);
+        }, message.timeout || 10 * 1000);
 
         callQueue.set(mid, { resolve, reject, timer });
 

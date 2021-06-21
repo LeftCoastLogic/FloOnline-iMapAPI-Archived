@@ -525,7 +525,7 @@ class ConnectionHandler {
             let mid = `${Date.now()}:${++this.mids}`;
 
             let timer = setTimeout(() => {
-                let err = new Error('Timeout waiting for command response');
+                let err = new Error('Timeout waiting for command response in imap');
                 err.statusCode = 504;
                 err.code = 'Timeout';
                 reject(err);
