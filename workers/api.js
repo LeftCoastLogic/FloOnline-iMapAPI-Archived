@@ -22,6 +22,7 @@ const { Account } = require('../lib/account');
 const settings = require('../lib/settings');
 const { getByteSize } = require('../lib/tools');
 const { getConfig } = require('../config/config');
+const moment = require('moment');
 const config = getConfig();
 
 const RESYNC_DELAY = 15 * 60;
@@ -514,7 +515,8 @@ const init = async () => {
                 }
                 let getStates = redis.pipeline();
                 for (let account of accounts) {
-                    getStates = getStates.hgetall(`iad:${account}`);
+                    getStates = getStates.hmget(`iad:${account}`,
+                        ['account', 'name', 'state', 'lastActive', 'lastErrorState']);
                 }
 
                 let results = await getStates.exec();
@@ -523,13 +525,13 @@ const init = async () => {
                         row =>
                             row &&
                             row[1] &&
-                            row[1].account && {
-                                account: row[1].account,
-                                name: row[1].name,
-                                state: row[1].state,
-                                lastActive: Number(row[1].lastActive) || null,
-                                syncTime: row[1].sync,
-                                lastError: row[1].state === 'connected' ? null : parseJSON(row[1].lastErrorState)
+                            row[1][0] && {
+                                account: row[1][0],
+                                name: row[1][1],
+                                state: row[1][2],
+                                lastActive: Number(row[1][3]) || null,
+                                // syncTime: row[1].sync,
+                                lastError: row[1][2] === 'connected' ? null : parseJSON(row[1][4])
                             }
                     )
                     .filter(row => row)
@@ -566,6 +568,62 @@ const init = async () => {
                         .label('AccountState'),
                     ids: Joi.string()
                 }).label('AccountsFilter')
+            }
+        }
+    });
+
+    server.route({
+        method: 'GET',
+        path: '/v1/inactive-accounts',
+
+        async handler(request) {
+            try {
+                const accounts = await redis.smembers('ia:accounts');
+                let getStates = redis.pipeline();
+                for (let account of accounts) {
+                    getStates = getStates.hmget(`iad:${account}`,
+                        ['account', 'lastActive', 'name']);
+                }
+                const results = (await getStates.exec()).map((r => r &&
+                    r[1] && r[1][0] && {
+                    account: r[1][0],
+                    name: r[1][2],
+                    lastActive: Number(r[1][1]) || null
+                }));
+                const duration = request.query.duration ? request.query.duration : 7;
+                if (results && results.length === 0) {
+                    return [];
+                }
+                const currUnix = Date.now() / 1000;
+                const inactiveAccounts = results.filter(r => !r.lastActive || (r.lastActive &&
+                    moment.unix(r.lastActive / 1000).diff(moment.unix(currUnix), 'days') >= duration));
+                return inactiveAccounts;
+            } catch (err) {
+                if (Boom.isBoom(err)) {
+                    throw err;
+                }
+                throw Boom.boomify(err, { statusCode: err.statusCode || 500, decorate: { code: err.code } });
+            }
+        },
+        options: {
+            description: 'Get inactive accounts list with duration time',
+            tags: ['api', 'account'],
+
+            validate: {
+                options: {
+                    stripUnknown: false,
+                    abortEarly: false,
+                    convert: true
+                },
+                failAction,
+
+                query: Joi.object(
+                    {
+                        duration: Joi.number()
+                            .example(7)
+                            .description('Duration between last active time and current time in day. Default is 7 days')
+                            .label('InactiveAccountDuration')
+                    })
             }
         }
     });
