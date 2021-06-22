@@ -412,6 +412,7 @@ const init = async () => {
 
                 payload: Joi.object({
                     name: Joi.string().max(256).example('My Email Account').description('Display name for the account'),
+                    lastActive: Joi.number().example(1624346284869).description('Last active time of the account'),
 
                     copy: Joi.boolean().example(true).description('Copy submitted messages to Sent folder').default(true),
                     notifyFrom: Joi.date().example('2020-01-01').description('Notify messages from date').default('now').iso(),
@@ -526,6 +527,7 @@ const init = async () => {
                                 account: row[1].account,
                                 name: row[1].name,
                                 state: row[1].state,
+                                lastActive: Number(row[1].lastActive) || null,
                                 syncTime: row[1].sync,
                                 lastError: row[1].state === 'connected' ? null : parseJSON(row[1].lastErrorState)
                             }

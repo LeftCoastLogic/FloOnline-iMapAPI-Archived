@@ -81,6 +81,11 @@ function showAccounts(e, state) {
                 tdName.textContent = accounData.name || '';
                 row.appendChild(tdName);
 
+                let tdLastActive = document.createElement('td');
+                tdLastActive.textContent = accounData.lastActive ?
+                moment(accounData.lastActive).format('DD-MM-YYYY hh:mm') : '';
+                row.appendChild(tdLastActive);
+
                 let tdState = document.createElement('td');
                 let state;
                 switch (accounData.state) {
