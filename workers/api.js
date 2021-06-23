@@ -582,12 +582,11 @@ const init = async () => {
                 let getStates = redis.pipeline();
                 for (let account of accounts) {
                     getStates = getStates.hmget(`iad:${account}`,
-                        ['account', 'lastActive', 'name']);
+                        ['account', 'lastActive']);
                 }
                 const results = (await getStates.exec()).map((r => r &&
                     r[1] && r[1][0] && {
                     account: r[1][0],
-                    name: r[1][2],
                     lastActive: Number(r[1][1]) || null
                 }));
                 const duration = request.query.duration ? request.query.duration : 7;
@@ -596,7 +595,8 @@ const init = async () => {
                 }
                 const currUnix = Date.now() / 1000;
                 const inactiveAccounts = results.filter(r => !r.lastActive || (r.lastActive &&
-                    moment.unix(r.lastActive / 1000).diff(moment.unix(currUnix), 'days') >= duration));
+                    moment.unix(r.lastActive / 1000).diff(moment.unix(currUnix), 'days') >= duration))
+                    .map(a => a.account);
                 return inactiveAccounts;
             } catch (err) {
                 if (Boom.isBoom(err)) {
